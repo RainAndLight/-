@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LOL</title>
+
+  <script src="./lib/js/jquery-1.12.4.js"></script>
+  <link href="./lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="./lib/js/template-web.js"></script>
+  <style>
+    .wrap {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: url('images/bg03.jpg') center bottom no-repeat;
+      overflow: auto;
+    }
+
+    .navbar-brand {
+      padding: 10px 15px;
+    }
+
+    .logout {
+      font-weight: 900;
+      font-size: 20px;
+      color: #ff0000;
+      text-decoration: none;
+    }
+
+    .logout:hover {
+      text-decoration: none;
+      color: yellowgreen;
+    }
+
+    #my-table th {
+      text-align: center;
+    }
+
+    #my-table td {
+      text-align: center;
+      line-height: 80px;
+      padding: 0;
+      padding: 10px;
+    }
+
+    td img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .username {
+      font-weight: 900;
+      color: hotpink;
+      background-color: yellowgreen;
+    }
+
+    .pagination {
+      margin: 0px;
+      padding: 0px;
+      font-size: 0;
+      line-height: 1;
+    }
+
+    .pagination li {
+      display: inline-block;
+      font-size: 14px;
+    }
+
+    .mp15 {
+      margin-top: 15px;
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table-bordered>thead>tr>td,
+    .table-bordered>thead>tr>th {
+      border-bottom-width: 1px;
+    }
+
+    .page-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <nav class="navbar  navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mymenu">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+              <div class="row">
+                <div class="col-md-6 page-title">英雄列表</div>
+                <div class="col-md-6 text-right">当前位置：首页</div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <!-- action 不写 就是当前页面 method 不写 就是 get -->
+              <div class="row">
+                <div class="col-md-9">
+                  <form class="form-inline">
+                    <div class="form-group">
+                      <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+                      <div class="input-group">
+                        <div class="input-group-addon">英雄姓名</div>
+                        <input type="text" value="" class="form-control" name="search" placeholder="请输入查询内容" />
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-default">查找</button>
+
+                  </form>
+                </div>
+                <div class="col-md-3">
+                  <a href="./add.html" class="btn btn-success pull-right">新增</a>
+                </div>
+
+              </div>
+
+              <table id="my-table" class="table table-bordered mp15">
+                <thead>
+                  <tr>
+                    <th width="25%">头像</th>
+                    <th width="25%">姓名</th>
+                    <th width="25%">技能</th>
+                    <th width="25%">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 放数据 -->
+                </tbody>
+              </table>
+            </div>
+            <div class="panel-footer text-center">
+              <ul class="pagination">
+                <li>
+                  <a href="#" aria-label="Previous">
+                    <span aria-hidden="true">«</span>
+                  </a>
+                </li>
+                <li class="page-num"><a href="#">1/1</a></li>
+                <li>
+                  <a href="#" aria-label="Next">
+                    <span aria-hidden="true">»</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script id="moban" type="text/html">
+  {{each arr}}
+    <tr class='d'>
+      <td><img src="./images/盖伦.png" alt="" /></td>
+      <td>{{$value.name}}</td>
+      <td>{{$value.skill}}</td>
+      <td>
+        <button class="btn btn-primary">编辑</button>
+        <button class="btn btn-danger" id={{$value.id}}>删除</button>
+      </td>
+    </tr>
+  {{/each}}
+</script>
+
+  <script>
+
+    //查
+    function dataload() {
+
+      $.ajax({
+        type: 'get',
+        dataType: 'json',
+        url: 'http://127.0.0.1:3000/getMsg',
+        success: function (res) {
+          // console.log(res);
+
+          var str = template('moban', {
+            arr: res
+          });
+          // console.log(this);
+
+          // console.log(str)
+          $('tbody').html(str);
+        }
+      })
+    }
+    dataload();
+
+    //删除
+    $('.panel-body').on('click', '.btn-danger', function (e) {
+      e.preventDefault()
+      let id = $(this).attr('id')
+      console.log(id);
+      
+      $.ajax({
+        type: 'post',
+        url: 'http://127.0.0.1:3000/deleteMsg',
+        dataType: 'json',
+        data: {id:id},
+        success: function (res) {
+          console.log('删除成功 id为' + id)
+          $(this).parents('.d').remove();
+          dataload();
+        }
+      })
+    })
+
+
+
+
+
+  </script>
+
+
+
+
+</body>
+
+</html>
