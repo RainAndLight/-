@@ -183,7 +183,7 @@
       <td>{{$value.skill}}</td>
       <td>
         <button class="btn btn-primary">编辑</button>
-        <button class="btn btn-danger" id={{$value.id}}>删除</button>
+        <button class="btn btn-danger" data-id={{$value.id}}>删除</button>
       </td>
     </tr>
   {{/each}}
@@ -216,9 +216,9 @@
     //删除
     $('.panel-body').on('click', '.btn-danger', function (e) {
       e.preventDefault()
-      let id = $(this).attr('id')
+      let id = $(this).attr('data-id')
       console.log(id);
-      
+      var that = $(this)
       $.ajax({
         type: 'post',
         url: 'http://127.0.0.1:3000/deleteMsg',
@@ -232,6 +232,7 @@
       })
     })
 
+    
 
 
 

@@ -11,20 +11,9 @@ app.use(express.static('public'));  //处理静态文件
 const bodyParser = require('body-parser');              //处理post请求
 app.use(bodyParser.urlencoded({ extended: false }));    //处理post请求
 
-//封装mysql模块
-function database(sql, callback) {
-    const mysql = require('mysql');
-    const conn = mysql.createConnection({
-        host: 'localhost',
-        port: 3306,
-        user: 'root',
-        password: 'admin',
-        database: 'herosnverdie',
-        multipleStatements: true
-    });
-    conn.query(sql, callback);
-    conn.end()
-}
+//加载db。js
+const db = require('./db.js')
+
 
 
 //测试接口
@@ -38,7 +27,7 @@ app.get('/getMsg', (req, res) => {
 
     //mysql
     let sql = 'select * from heroes'
-    database(sql, (err, result) => {
+    db.database(sql, (err, result) => {
         if (err) {
             console.log('获取失败')
         } else {
@@ -49,7 +38,7 @@ app.get('/getMsg', (req, res) => {
 })
 
 //删除一条数据
-app.post('/deleteMsg',(req,res) => {
-    req.body
-})
+// app.post('/deleteMsg',(req,res) => {
+//     req.body
+// })
 
